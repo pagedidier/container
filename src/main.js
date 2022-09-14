@@ -1,11 +1,24 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import axios from 'axios';
+
 
 import './assets/main.css'
 
-const app = createApp(App)
+import ConfiguratorRepository from './repositories/configuration/configuration.repository';
+import AxiosService from './services/axios.service';
 
-app.use(router)
+AxiosService.init();
 
-app.mount('#app')
+axios.get('/urls.json').then(({ data }) => {
+    const app = createApp(App)
+    app.use(router)
+    const configurationRepository = new ConfiguratorRepository(data.configurator_url, '');
+    app.provide("configurationRepository",configurationRepository);
+
+    app.mount('#app')
+});
+
+
+
